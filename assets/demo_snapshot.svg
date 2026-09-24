@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="280" viewBox="0 0 1200 280" role="img" aria-labelledby="title desc">
+<title id="title">Misconception-Aware RAG Tutor demo snapshot</title>
+<desc id="desc">Example values produced by the synthetic demo included in this repository.</desc>
+<rect width="1200" height="280" rx="24" fill="#111827"/>
+<text x="52" y="48" font-family="Arial, Helvetica, sans-serif" font-size="24" font-weight="700" fill="#f9fafb">Demo snapshot</text>
+<text x="52" y="76" font-family="Arial, Helvetica, sans-serif" font-size="14" fill="#aeb8c5">Output from the bundled synthetic example. These are not research results.</text>
+<rect x="52.0" y="112" width="353.3" height="108" rx="14" fill="#1f2937" stroke="#46556a"/>
+<text x="70.0" y="142" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="600" fill="#93c5fd">Retrieved evidence</text>
+<text x="70.0" y="172" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="600" fill="#f3f4f6">d1</text>
+<rect x="423.3" y="112" width="353.3" height="108" rx="14" fill="#1f2937" stroke="#46556a"/>
+<text x="441.3" y="142" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="600" fill="#93c5fd">Grounding</text>
+<text x="441.3" y="172" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="600" fill="#f3f4f6">Course corpus only</text>
+<rect x="794.7" y="112" width="353.3" height="108" rx="14" fill="#1f2937" stroke="#46556a"/>
+<text x="812.7" y="142" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="600" fill="#93c5fd">Fallback</text>
+<text x="812.7" y="172" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="600" fill="#f3f4f6">Surface uncertainty when evidence</text>
+<text x="812.7" y="194" font-family="Arial, Helvetica, sans-serif" font-size="16" font-weight="600" fill="#f3f4f6">is weak</text>
+<text x="52" y="252" font-family="Arial, Helvetica, sans-serif" font-size="13" fill="#8995a5">Run: python scripts/run_demo.py</text>
+</svg>

@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite it."
+title: "Misconception-Aware RAG Tutor"
+type: software
+authors:
+  - family-names: "Saputra"
+    given-names: "Devis Wawan"
+repository-code: "https://github.com/devissaputra/misconception-aware-rag"
+license: MIT
+version: 0.1.0
