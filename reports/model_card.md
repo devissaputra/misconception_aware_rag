@@ -6,28 +6,138 @@ Misconception-Aware RAG Tutor
 
 ## Purpose
 
-Lexical retrieval baseline that links misconception cues to course evidence without inventing unsupported answers.
+Transparent misconception-conditioned educational retrieval with evidence sufficiency, abstention, and citation-grounded tutor response generation.
 
 ## Current maturity
 
-Working research prototype. The bundled example checks the software path with synthetic inputs. It does not establish validity for real learners, instructors, courses, or workplaces.
+Working research prototype.
+
+All bundled documents, misconception records, relevance judgments, authority values, and learner responses are synthetic.
+
+The demo validates software behavior and component metrics; it does not establish diagnostic or pedagogical validity.
 
 ## Inputs
 
-See `../data/README.md` for the current synthetic schema and the documentation expected before real data are connected.
+### Task context
 
-## Outputs
+- task question
+- learner response
 
-The current code produces misconception labels plus IDs and text for retrieved evidence passages. These outputs are research signals and should be interpreted with the educational context that produced them.
+These are kept separate because mentioning a misconception in a question is not the same as expressing it as an answer.
 
-## Evidence needed before real use
+### Misconception catalog
 
-Measure retrieval recall and precision on labeled evidence, then evaluate misconception detection separately. If generation is added later, score citation support and answer faithfulness against the retrieved corpus.
+Each record contains:
 
-## Main limitation
+- ID
+- concept
+- canonical statement
+- description
+- positive cues
+- negative/rejection cues
+- corrective concepts
+- remediation text
+- preferred evidence IDs
 
-Cue matching and lexical overlap will miss paraphrases and can retrieve text that shares words without answering the question. The module does not verify factual completeness or generate a final tutoring response.
+### Evidence corpus
+
+Each passage contains:
+
+- document ID
+- concept
+- evidence kind
+- text
+- source
+- authority metadata
+
+## Misconception outputs
+
+Cue-level detection can return:
+
+- possible
+- rejected
+- ambiguous
+
+The system should not describe these as confirmed learner diagnoses.
+
+## Retrieval
+
+The repository contains:
+
+- generic BM25 retrieval
+- misconception-conditioned query construction
+- concept/evidence-aware reranking
+- per-result score breakdown
+
+The misconception signal now changes retrieval behavior.
+
+## Evidence sufficiency
+
+Before generation, the code checks:
+
+- evidence count
+- top evidence score
+- explanatory/counterevidence availability for detected misconceptions
+
+Insufficient evidence produces abstention.
+
+## Generation
+
+The current generator is deterministic.
+
+It cites retrieved evidence IDs and composes a transparent tutor response from retrieved passages.
+
+It is **not an LLM**.
+
+A future learned generator should be evaluated separately for unsupported claims and citation faithfulness.
+
+## Evaluation
+
+Implemented component metrics include:
+
+### Misconception detection
+
+- precision
+- recall
+- F1
+
+### Retrieval
+
+- Precision@k
+- Recall@k
+- reciprocal rank
+- nDCG@k
+
+### Response behavior
+
+- grounded response vs abstention
+- citation IDs returned
+
+The current code does not implement a semantic faithfulness scorer.
+
+## Main limitations
+
+- cue matching misses paraphrases
+- negative cues are catalog-specific
+- BM25 remains lexical
+- preferred evidence metadata can cause evaluation leakage if misused
+- authority metadata is manually supplied
+- evidence sufficiency thresholds are unvalidated
+- deterministic generation is limited and repetitive
+- no learned dialogue reasoning
+- no empirical learner validation
 
 ## Human oversight
 
-A person must review any output before it can affect a learner, instructor, applicant, or employee.
+Misconception detections should remain hypotheses.
+
+A teacher, tutor, researcher, or learner should be able to inspect:
+
+- which cue fired
+- whether rejection cues were present
+- how retrieval was expanded
+- why each evidence passage ranked highly
+- whether the system abstained
+- which passages support the generated response
+
+No output should become a permanent learner label without stronger evidence and governance.
