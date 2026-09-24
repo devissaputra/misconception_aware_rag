@@ -1,3 +1,4 @@
 doc_id,concept,text
-D01,photosynthesis,Photosynthesis converts light energy into chemical energy.
-D02,respiration,Cellular respiration releases usable energy from glucose.
+D01,plant respiration,Plant cells perform cellular respiration in mitochondria.
+D13,correlation and causation,A statistical association alone does not establish causation.
+D16,while loops,A while loop can execute zero times because it checks its condition first.
