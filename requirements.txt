@@ -1,2 +1,2 @@
-# Core demo uses only the Python standard library.
-# Add pinned research dependencies only when a concrete experiment requires them.
+# Core retrieval, reranking, evaluation, tests, and deterministic generation use only the Python standard library.
+# Add pinned neural retrieval or LLM dependencies only when a concrete experiment actually requires them.
