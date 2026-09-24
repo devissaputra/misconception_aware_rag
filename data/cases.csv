@@ -1,0 +1,17 @@
+case_id,task_question,learner_response,expected_misconceptions,relevant_document_ids,case_type
+C01,Do plants carry out cellular respiration?,Only animals respire.,M01,D01|D02|D03,positive
+C02,Do plants carry out cellular respiration?,Plants do respire.,,D01|D02,rejection
+C03,Do plants carry out cellular respiration?,It is false that plants do not respire.,,D01|D02,negated
+C04,Where does most plant carbohydrate come from?,Plants get food from soil.,M02,D04|D05|D06,positive
+C05,What happens after a push ends on a frictionless surface?,It needs force to keep moving.,M03,D07|D08|D09,positive
+C06,Which is larger one third or one fifth?,One fifth is bigger than one third.,M04,D10|D11|D12,positive
+C07,What can a correlation establish?,Correlation proves causation.,M05,D13|D14|D15,positive
+C08,What can a correlation establish?,Correlation does not prove causation.,,D13|D14,rejection
+C09,Can a while loop execute zero times?,A while loop always runs once.,M06,D16|D17|D18,positive
+C10,After ten heads what is the chance of tails next?,Tails is due after many heads.,M07,D19|D20|D21,positive
+C11,What is the chance of tails on an independent fair flip?,Each fair flip stays independent.,,D19|D20,rejection
+C12,Does the hotter object always contain more thermal energy?,Temperature measures total heat.,M08,D22|D23|D24,positive
+C13,What does photosynthesis do?,Photosynthesis stores energy in glucose.,,D04|D05,clean
+C14,How do unit fractions compare?,Larger denominator makes smaller pieces.,,D10|D11,rejection
+C15,Can a while loop run zero times?,The condition is checked before the loop.,,D16|D17,rejection
+C16,Why can temperature and total thermal energy differ?,Thermal energy depends on amount of matter.,,D22|D23,clean
