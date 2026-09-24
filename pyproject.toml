@@ -4,11 +4,26 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "misconception-aware-rag"
-version = "0.1.0"
-description = "Lexical retrieval baseline that links misconception cues to course evidence without inventing unsupported answers."
+version = "0.2.0"
+description = "Misconception-conditioned educational RAG baseline with BM25 retrieval, pedagogical reranking, abstention, and citation-grounded response generation."
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [{name = "Devis Wawan Saputra"}]
+readme = "README.md"
+keywords = [
+  "retrieval-augmented-generation",
+  "misconception-detection",
+  "educational-retrieval",
+  "ai-in-education",
+  "intelligent-tutoring",
+  "bm25",
+  "grounded-generation",
+  "learning-analytics",
+  "python",
+]
+
+[project.urls]
+Repository = "https://github.com/devissaputra/misconception_aware_rag"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
