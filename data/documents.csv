@@ -1,0 +1,25 @@
+doc_id,concept,kind,text,source,authority
+D01,plant respiration,counterevidence,Plant cells perform cellular respiration in mitochondria and release usable energy from glucose.,synthetic_course,1.0
+D02,plant respiration,explanation,Plants carry out both photosynthesis and cellular respiration; the processes serve different roles.,synthetic_course,1.0
+D03,plant respiration,remediation,Compare photosynthesis with respiration: photosynthesis stores energy in glucose while respiration releases usable energy.,synthetic_course,0.95
+D04,photosynthesis,counterevidence,Plants build sugars from carbon dioxide and water using light energy rather than absorbing ready-made food from soil.,synthetic_course,1.0
+D05,photosynthesis,explanation,Photosynthesis converts light energy into chemical energy stored in glucose.,synthetic_course,1.0
+D06,photosynthesis,worked_example,A seedling receives minerals from soil but produces carbohydrate through photosynthesis in its leaves.,synthetic_course,0.9
+D07,force and motion,counterevidence,An object can continue moving at constant velocity without a net force when opposing forces are negligible.,synthetic_course,1.0
+D08,force and motion,explanation,Net force changes velocity; it is not required merely to maintain constant velocity.,synthetic_course,1.0
+D09,force and motion,worked_example,A puck gliding nearly friction-free continues moving after the push ends because its velocity does not require a continuing net force.,synthetic_course,0.9
+D10,fractions,counterevidence,For unit fractions with the same numerator one a larger denominator means each part is smaller.,synthetic_course,1.0
+D11,fractions,worked_example,One third is greater than one fifth because dividing the same whole into three equal parts makes larger pieces than dividing it into five.,synthetic_course,1.0
+D12,fractions,remediation,Compare fractions using a common whole and reason about piece size before comparing denominator numerals.,synthetic_course,0.9
+D13,correlation and causation,counterevidence,A statistical association alone does not establish that one variable caused the other because confounding and reverse causation may remain.,synthetic_course,1.0
+D14,correlation and causation,explanation,Causal claims require a defensible identification strategy or experimental design beyond correlation alone.,synthetic_course,1.0
+D15,correlation and causation,remediation,When only association is supported use language such as is associated with instead of causes.,synthetic_course,0.95
+D16,while loops,counterevidence,A while loop checks its condition before the body runs so it can execute zero times.,synthetic_course,1.0
+D17,while loops,worked_example,If x starts at 5 then while x less than 3 does not execute even once.,synthetic_course,1.0
+D18,while loops,remediation,Trace the condition before the first iteration to decide whether a while loop runs at all.,synthetic_course,0.9
+D19,independent probability,counterevidence,For independent coin flips previous outcomes do not make tails more likely on the next fair flip.,synthetic_course,1.0
+D20,independent probability,worked_example,After ten heads a fair coin still has probability one half of tails on the next independent flip.,synthetic_course,1.0
+D21,independent probability,remediation,Separate long-run balance from the probability of the next independent event.,synthetic_course,0.9
+D22,heat and temperature,counterevidence,Temperature measures thermal state while total thermal energy also depends on the amount and properties of matter.,synthetic_course,1.0
+D23,heat and temperature,worked_example,A large bucket of warm water can contain more thermal energy than a tiny cup of hotter water.,synthetic_course,1.0
+D24,heat and temperature,remediation,Compare temperature with total thermal energy by considering both temperature and quantity of matter.,synthetic_course,0.9
