@@ -20,3 +20,10 @@ These fixtures exist to exercise detection, BM25 retrieval, reranking, abstentio
 Do not commit identifiable learner responses, private tutoring dialogue, grades, accommodations, health information, restricted LMS exports, proprietary course materials or copyrighted textbook chapters without permission.
 
 A real misconception-diagnosis study requires expert annotation, adjudication, privacy governance and held-out learner data. SciQ distractors in the current empirical retrieval study are wrong-answer proxies, not validated misconception labels.
+
+
+## Shuffled control
+
+The empirical runner also creates a deterministic shuffled wrong-answer control. For each distractor position, every eligible distractor text is reassigned exactly once to a different question under a frozen no-self-match permutation. This preserves the distractor-text distribution while breaking question–answer alignment.
+
+The shuffled control is an empirical negative control for lexical query expansion. It is not learner data and is not stored as raw text in generated results.
