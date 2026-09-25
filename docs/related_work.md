@@ -50,6 +50,10 @@ That work reinforces the importance of evaluating misconception identification s
 
 The current repository instead uses a hand-authored cue catalog so every diagnostic rule remains inspectable.
 
+## Empirical SciQ retrieval study
+
+The empirical layer does not test the full tutoring architecture. It tests whether adding an observed SciQ distractor changes retrieval of the associated support passage, and whether that effect differs from appending distractor text taken from another question. This negative-control design is intentionally narrower than misconception diagnosis.
+
 ## Current scope
 
 Implemented:
@@ -87,4 +91,4 @@ Not implemented:
 - production learner model
 - empirical teacher or learner study
 
-The project is best understood as a reproducible misconception-aware educational RAG baseline whose individual components can be replaced and evaluated separately.
+The repository now has two deliberately separated research layers. The empirical SciQ study evaluates wrong-answer-conditioned BM25 retrieval against question-only retrieval and a shuffled lexical-expansion negative control. The misconception-aware tutor remains an inspectable prototype whose diagnostic and pedagogical components require separate learner-level validation.
