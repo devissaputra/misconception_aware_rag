@@ -1,143 +1,35 @@
-# Analytic system card
+# Analytic System Card
 
 ## System
 
 Misconception-Aware RAG Tutor
 
-## Purpose
-
-Transparent misconception-conditioned educational retrieval with evidence sufficiency, abstention, and citation-grounded tutor response generation.
-
 ## Current maturity
 
-Working research prototype.
+Research prototype with a real external retrieval study and synthetic fixtures for the diagnostic/tutoring components.
 
-All bundled documents, misconception records, relevance judgments, authority values, and learner responses are synthetic.
+## Empirical evidence available
 
-The demo validates software behavior and component metrics; it does not establish diagnostic or pedagogical validity.
+The external SciQ study evaluates one bounded claim: whether adding an observed wrong-answer option changes BM25 retrieval of a support passage. It does not validate misconception diagnosis or tutoring effectiveness.
 
-## Inputs
+SciQ distractors are treated as wrong-answer proxies. The correct-answer-expanded condition is an oracle sensitivity analysis only.
 
-### Task context
+## Prototype inputs and outputs
 
-- task question
-- learner response
-
-These are kept separate because mentioning a misconception in a question is not the same as expressing it as an answer.
-
-### Misconception catalog
-
-Each record contains:
-
-- ID
-- concept
-- canonical statement
-- description
-- positive cues
-- negative/rejection cues
-- corrective concepts
-- remediation text
-- preferred evidence IDs
-
-### Evidence corpus
-
-Each passage contains:
-
-- document ID
-- concept
-- evidence kind
-- text
-- source
-- authority metadata
-
-## Misconception outputs
-
-Cue-level detection can return:
-
-- possible
-- rejected
-- ambiguous
-
-The system should not describe these as confirmed learner diagnoses.
-
-## Retrieval
-
-The repository contains:
-
-- generic BM25 retrieval
-- misconception-conditioned query construction
-- concept/evidence-aware reranking
-- per-result score breakdown
-
-The misconception signal now changes retrieval behavior.
-
-## Evidence sufficiency
-
-Before generation, the code checks:
-
-- evidence count
-- top evidence score
-- explanatory/counterevidence availability for detected misconceptions
-
-Insufficient evidence produces abstention.
-
-## Generation
-
-The current generator is deterministic.
-
-It cites retrieved evidence IDs and composes a transparent tutor response from retrieved passages.
-
-It is **not an LLM**.
-
-A future learned generator should be evaluated separately for unsupported claims and citation faithfulness.
-
-## Evaluation
-
-Implemented component metrics include:
-
-### Misconception detection
-
-- precision
-- recall
-- F1
-
-### Retrieval
-
-- Precision@k
-- Recall@k
-- reciprocal rank
-- nDCG@k
-
-### Response behavior
-
-- grounded response vs abstention
-- citation IDs returned
-
-The current code does not implement a semantic faithfulness scorer.
+The prototype accepts task context and learner response, can emit possible/rejected/ambiguous misconception hypotheses, performs lexical retrieval and pedagogical reranking, checks evidence sufficiency, and either abstains or composes a deterministic citation-grounded response.
 
 ## Main limitations
 
-- cue matching misses paraphrases
-- negative cues are catalog-specific
-- BM25 remains lexical
-- preferred evidence metadata can cause evaluation leakage if misused
-- authority metadata is manually supplied
-- evidence sufficiency thresholds are unvalidated
-- deterministic generation is limited and repetitive
-- no learned dialogue reasoning
-- no empirical learner validation
+- cue matching can miss paraphrases;
+- a wrong answer need not imply a stable misconception;
+- synthetic fixture cues are not population-validated;
+- BM25 is lexical;
+- metadata boosts require validation;
+- evidence-sufficiency thresholds are unvalidated;
+- deterministic generation is limited;
+- retrieval relevance is not pedagogical effectiveness;
+- the SciQ support corpus is not a real classroom knowledge base.
 
 ## Human oversight
 
-Misconception detections should remain hypotheses.
-
-A teacher, tutor, researcher, or learner should be able to inspect:
-
-- which cue fired
-- whether rejection cues were present
-- how retrieval was expanded
-- why each evidence passage ranked highly
-- whether the system abstained
-- which passages support the generated response
-
-No output should become a permanent learner label without stronger evidence and governance.
+Misconception hypotheses should remain inspectable and reversible. No output should become a durable learner label or consequential decision without stronger evidence and governance.
