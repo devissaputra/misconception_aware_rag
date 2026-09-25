@@ -1,0 +1,65 @@
+{
+  "research_bundle": true,
+  "dataset": {
+    "dataset": "SciQ",
+    "repository": "allenai/sciq",
+    "revision": "2c94ad3e1aafab77146f384e23536f97a4849815",
+    "file": "data/test-00000-of-00001.parquet",
+    "url": "https://huggingface.co/datasets/allenai/sciq/resolve/2c94ad3e1aafab77146f384e23536f97a4849815/data/test-00000-of-00001.parquet",
+    "sha256": "3a719356a29b127fc54ef3c7f51a034db4bd105d5717215e8c85d2aa58d60667",
+    "license": "CC BY-NC 3.0",
+    "paper": "Welbl, Liu & Gardner (2017), Crowdsourcing Multiple Choice Science Questions, arXiv:1707.06209",
+    "rows_loaded": 1000
+  },
+  "design": {
+    "eligible_questions_with_support": 884,
+    "unique_support_documents": 884,
+    "wrong_answer_cases": 2652,
+    "conditions": {
+      "question_only": "question text only",
+      "wrong_answer_conditioned": "question plus one SciQ distractor as an observed wrong-answer proxy",
+      "oracle_corrective": "question plus distractor plus gold correct answer; upper-bound sensitivity only"
+    },
+    "primary_comparison": "wrong_answer_conditioned versus question_only",
+    "important_nonclaim": "SciQ distractors are not validated learner misconceptions"
+  },
+  "metrics": {
+    "question_only": {
+      "rr": 0.9471530920060329,
+      "recall_1": 0.9253393665158371,
+      "recall_3": 0.9671945701357466,
+      "recall_5": 0.9739819004524887,
+      "ndcg_5": 0.9540281871781204
+    },
+    "wrong_answer_conditioned": {
+      "rr": 0.9432629462041229,
+      "recall_1": 0.919683257918552,
+      "recall_3": 0.9671945701357466,
+      "recall_5": 0.9732277526395173,
+      "ndcg_5": 0.9509245051036408
+    },
+    "oracle_corrective": {
+      "rr": 0.9612242332830566,
+      "recall_1": 0.9453242835595776,
+      "recall_3": 0.9766214177978884,
+      "recall_5": 0.9815233785822021,
+      "ndcg_5": 0.966407929674657
+    }
+  },
+  "uncertainty": {
+    "unit": "question",
+    "metric": "mean reciprocal rank delta (wrong-answer-conditioned minus question-only)",
+    "n_questions": 884,
+    "n_bootstrap": 3000,
+    "mean_delta": -0.003890145801910506,
+    "bootstrap_95_interval": [
+      -0.007704876822523882,
+      -0.000232528908999497
+    ]
+  },
+  "directional_error_analysis": {
+    "improved_cases": 23,
+    "worsened_cases": 55,
+    "tied_cases": 2574
+  }
+}
