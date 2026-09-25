@@ -1,5 +1,6 @@
 {
   "research_bundle": true,
+  "status": "complete",
   "dataset": {
     "dataset": "SciQ",
     "repository": "allenai/sciq",
@@ -11,6 +12,20 @@
     "paper": "Welbl, Liu & Gardner (2017), Crowdsourcing Multiple Choice Science Questions, arXiv:1707.06209",
     "rows_loaded": 1000
   },
+  "protocol": {
+    "bm25": {
+      "k1": 1.5,
+      "b": 0.75
+    },
+    "retrieval_k": 5,
+    "tokenizer_regex": "\\w+",
+    "tokenizer_flags": "UNICODE; lowercase",
+    "bootstrap_replicates": 3000,
+    "bootstrap_seed_primary": 20260925,
+    "shuffle_seed": 20260925,
+    "shuffled_control": "within each distractor position, a deterministic no-self-match permutation assigns distractor text from another eligible question",
+    "shuffled_control_preserves_marginal_distractor_texts": true
+  },
   "design": {
     "eligible_questions_with_support": 884,
     "unique_support_documents": 884,
@@ -18,9 +33,11 @@
     "conditions": {
       "question_only": "question text only",
       "wrong_answer_conditioned": "question plus one SciQ distractor as an observed wrong-answer proxy",
-      "oracle_corrective": "question plus distractor plus gold correct answer; upper-bound sensitivity only"
+      "shuffled_wrong_answer_control": "question plus distractor text drawn by deterministic derangement from a different eligible question",
+      "oracle_corrective": "question plus observed distractor plus gold correct answer; oracle-informed sensitivity condition only"
     },
     "primary_comparison": "wrong_answer_conditioned versus question_only",
+    "negative_control_comparison": "wrong_answer_conditioned versus shuffled_wrong_answer_control",
     "important_nonclaim": "SciQ distractors are not validated learner misconceptions"
   },
   "metrics": {
@@ -38,6 +55,13 @@
       "recall_5": 0.9732277526395173,
       "ndcg_5": 0.9509245051036408
     },
+    "shuffled_wrong_answer_control": {
+      "rr": 0.9447083961789843,
+      "recall_1": 0.9223227752639518,
+      "recall_3": 0.9664404223227753,
+      "recall_5": 0.971342383107089,
+      "ndcg_5": 0.9515613635452386
+    },
     "oracle_corrective": {
       "rr": 0.9612242332830566,
       "recall_1": 0.9453242835595776,
@@ -46,20 +70,77 @@
       "ndcg_5": 0.966407929674657
     }
   },
+  "mean_query_tokens": {
+    "question_only": 13.194570135746606,
+    "wrong_answer_conditioned": 14.633107088989442,
+    "shuffled_wrong_answer_control": 14.633107088989442,
+    "oracle_corrective": 16.120663650075414
+  },
   "uncertainty": {
-    "unit": "question",
-    "metric": "mean reciprocal rank delta (wrong-answer-conditioned minus question-only)",
-    "n_questions": 884,
-    "n_bootstrap": 3000,
-    "mean_delta": -0.003890145801910506,
-    "bootstrap_95_interval": [
-      -0.007704876822523882,
-      -0.000232528908999497
-    ]
+    "wrong_vs_question": {
+      "unit": "question",
+      "metric": "mean reciprocal rank delta (wrong_answer_conditioned minus question_only)",
+      "treatment": "wrong_answer_conditioned",
+      "comparator": "question_only",
+      "n_questions": 884,
+      "n_bootstrap": 3000,
+      "bootstrap_seed": 20260925,
+      "mean_delta": -0.003890145801910506,
+      "bootstrap_95_interval": [
+        -0.007704876822523882,
+        -0.000232528908999497
+      ]
+    },
+    "shuffled_vs_question": {
+      "unit": "question",
+      "metric": "mean reciprocal rank delta (shuffled_wrong_answer_control minus question_only)",
+      "treatment": "shuffled_wrong_answer_control",
+      "comparator": "question_only",
+      "n_questions": 884,
+      "n_bootstrap": 3000,
+      "bootstrap_seed": 20260926,
+      "mean_delta": -0.0024446958270487686,
+      "bootstrap_95_interval": [
+        -0.004399195575666165,
+        -0.00047762694821518355
+      ]
+    },
+    "wrong_vs_shuffled": {
+      "unit": "question",
+      "metric": "mean reciprocal rank delta (wrong_answer_conditioned minus shuffled_wrong_answer_control)",
+      "treatment": "wrong_answer_conditioned",
+      "comparator": "shuffled_wrong_answer_control",
+      "n_questions": 884,
+      "n_bootstrap": 3000,
+      "bootstrap_seed": 20260927,
+      "mean_delta": -0.0014454499748617392,
+      "bootstrap_95_interval": [
+        -0.005662393162393162,
+        0.0027149321266968325
+      ]
+    }
   },
   "directional_error_analysis": {
-    "improved_cases": 23,
-    "worsened_cases": 55,
-    "tied_cases": 2574
+    "wrong_vs_question": {
+      "treatment": "wrong_answer_conditioned",
+      "comparator": "question_only",
+      "improved_cases": 23,
+      "worsened_cases": 55,
+      "tied_cases": 2574
+    },
+    "wrong_vs_shuffled": {
+      "treatment": "wrong_answer_conditioned",
+      "comparator": "shuffled_wrong_answer_control",
+      "improved_cases": 40,
+      "worsened_cases": 57,
+      "tied_cases": 2555
+    }
+  },
+  "environment": {
+    "python": "3.11.16",
+    "implementation": "CPython",
+    "pandas": "2.3.3",
+    "pyarrow": "24.0.0",
+    "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39"
   }
 }
