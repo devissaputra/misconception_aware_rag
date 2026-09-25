@@ -4,22 +4,27 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "misconception-aware-rag"
-version = "0.2.0"
-description = "Misconception-conditioned educational RAG baseline with BM25 retrieval, pedagogical reranking, abstention, and citation-grounded response generation."
+version = "0.3.0"
+description = "Empirical AI-in-Education research bundle for wrong-answer-conditioned evidence retrieval on frozen SciQ, with a transparent misconception-aware tutoring prototype."
 requires-python = ">=3.10"
 license = {text = "MIT"}
 authors = [{name = "Devis Wawan Saputra"}]
 readme = "README.md"
+dependencies = [
+  "pandas>=2.2,<3",
+  "pyarrow>=16,<25",
+]
 keywords = [
-  "retrieval-augmented-generation",
-  "misconception-detection",
-  "educational-retrieval",
   "ai-in-education",
-  "intelligent-tutoring",
+  "educational-retrieval",
+  "wrong-answer-conditioning",
+  "negative-control",
+  "sciq",
   "bm25",
-  "grounded-generation",
-  "learning-analytics",
-  "python",
+  "retrieval-augmented-generation",
+  "misconception-aware-rag",
+  "reproducible-research",
+  "intelligent-tutoring",
 ]
 
 [project.urls]
