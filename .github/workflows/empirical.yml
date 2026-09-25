@@ -6,6 +6,7 @@ on:
     paths:
       - "scripts/run_sciq_study.py"
       - "requirements.txt"
+      - "pyproject.toml"
       - ".github/workflows/empirical.yml"
   workflow_dispatch:
 
@@ -38,7 +39,7 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add results/metrics.json results/per_case_metrics.csv results/summary.md paper/results.md
+          git add results/metrics.json results/per_case_metrics.csv results/summary.md paper/results.md paper/results.tex
           if git diff --cached --quiet; then
             echo "No result changes"
           else
