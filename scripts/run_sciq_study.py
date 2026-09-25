@@ -375,7 +375,29 @@ def build_results_latex(result: dict) -> str:
             f"{label}: mean MRR delta {d['mean_delta']:.4f}, "
             f"question-block bootstrap 95\\% interval [{lo:.4f}, {hi:.4f}]."
         )
+    wq = result["uncertainty"]["wrong_vs_question"]
+    sq = result["uncertainty"]["shuffled_vs_question"]
+    ws = result["uncertainty"]["wrong_vs_shuffled"]
     lines += [
+        "",
+        f"{bs}paragraph{{Empirical interpretation.}}",
+        (
+            "Observed wrong-answer conditioning reduces MRR relative to question-only retrieval "
+            f"(mean delta {wq['mean_delta']:.4f}; 95\\% interval "
+            f"[{wq['bootstrap_95_interval'][0]:.4f}, {wq['bootstrap_95_interval'][1]:.4f}])."
+        ),
+        (
+            "The shuffled lexical-expansion control also reduces MRR relative to question-only retrieval "
+            f"(mean delta {sq['mean_delta']:.4f}; 95\\% interval "
+            f"[{sq['bootstrap_95_interval'][0]:.4f}, {sq['bootstrap_95_interval'][1]:.4f}])."
+        ),
+        (
+            "Observed wrong-answer conditioning is not clearly distinguishable from the shuffled control "
+            f"(mean delta {ws['mean_delta']:.4f}; 95\\% interval "
+            f"[{ws['bootstrap_95_interval'][0]:.4f}, {ws['bootstrap_95_interval'][1]:.4f}]). "
+            "Under this frozen lexical protocol, the evidence therefore supports a generic query-expansion "
+            "cost more strongly than a content-specific wrong-answer effect."
+        ),
         "",
         "The shuffled control preserves the marginal distractor-text distribution while breaking the question--answer relation. It is a lexical-expansion negative control, not a simulated learner response.",
         "",
@@ -529,7 +551,27 @@ def write_outputs(
             f"{d['improved_cases']} / {d['worsened_cases']} / {d['tied_cases']}"
         )
 
+    wq = uncertainty["wrong_vs_question"]
+    sq = uncertainty["shuffled_vs_question"]
+    ws = uncertainty["wrong_vs_shuffled"]
     lines += [
+        "",
+        "## Empirical interpretation",
+        "",
+        (
+            f"- Observed wrong-answer conditioning vs question only: delta {wq['mean_delta']:.4f}; "
+            f"95% interval [{wq['bootstrap_95_interval'][0]:.4f}, {wq['bootstrap_95_interval'][1]:.4f}]."
+        ),
+        (
+            f"- Shuffled lexical control vs question only: delta {sq['mean_delta']:.4f}; "
+            f"95% interval [{sq['bootstrap_95_interval'][0]:.4f}, {sq['bootstrap_95_interval'][1]:.4f}]."
+        ),
+        (
+            f"- Observed wrong answer vs shuffled control: delta {ws['mean_delta']:.4f}; "
+            f"95% interval [{ws['bootstrap_95_interval'][0]:.4f}, {ws['bootstrap_95_interval'][1]:.4f}]."
+        ),
+        "",
+        "Both observed and shuffled distractor expansion reduce MRR relative to question-only retrieval. The observed-vs-shuffled interval overlaps zero, so this frozen BM25 study does not provide clear evidence that the semantic relationship of the actual wrong answer produces an effect beyond generic distractor-like lexical expansion.",
         "",
         "## Interpretation boundary",
         "",
