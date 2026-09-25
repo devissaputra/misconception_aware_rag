@@ -40,3 +40,5 @@ Thumbs.db
 
 data/private/
 data/restricted/
+
+data/cache/
