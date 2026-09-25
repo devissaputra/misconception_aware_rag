@@ -1,0 +1,48 @@
+name: Empirical Study
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "scripts/run_sciq_study.py"
+      - "requirements.txt"
+      - ".github/workflows/empirical.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: empirical-study-main
+  cancel-in-progress: false
+
+jobs:
+  run-study:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+      - name: Install empirical dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Run pinned external SciQ study
+        run: python scripts/run_sciq_study.py
+      - name: Commit generated evidence
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add results/metrics.json results/per_case_metrics.csv results/summary.md paper/results.md
+          if git diff --cached --quiet; then
+            echo "No result changes"
+          else
+            git commit -m "research: regenerate SciQ retrieval results"
+            git pull --rebase origin main
+            git push origin HEAD:main
+          fi
