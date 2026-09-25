@@ -84,6 +84,16 @@ Generated evidence:
 - `paper/results.md`
 - `paper/results.tex`
 
+## Current empirical finding
+
+Under the frozen SciQ/BM25 protocol:
+
+- observed wrong-answer conditioning reduces MRR versus question-only retrieval by **0.0039** (95% question-block interval **[-0.0077, -0.0002]**);
+- the shuffled lexical-expansion control also reduces MRR by **0.0024** (95% interval **[-0.0044, -0.0005]**);
+- observed wrong-answer conditioning differs from the shuffled control by **-0.0014**, with interval **[-0.0057, 0.0027]**.
+
+So the evidence does **not** show a clear content-specific benefit or penalty from the actual wrong answer beyond the generic cost of adding distractor-like lexical material. That negative result is the main empirical finding.
+
 ## Prototype boundary
 
 The prototype can create possible/rejected/ambiguous misconception hypotheses, expand retrieval queries, rerank evidence, assess sufficiency and abstain or generate a deterministic citation-grounded response. Those components remain research scaffolding for a future learner-validated study.
