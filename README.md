@@ -1,514 +1,124 @@
-# Misconception-Aware RAG Tutor
-
-> Misconception-conditioned educational retrieval with BM25 ranking, pedagogical reranking, evidence sufficiency, abstention, and citation-grounded tutor response generation.
+# Misconception-Aware RAG Tutor — Research Bundle
 
 [![CI](https://github.com/devissaputra/misconception_aware_rag/actions/workflows/ci.yml/badge.svg)](https://github.com/devissaputra/misconception_aware_rag/actions/workflows/ci.yml)
+[![Empirical Study](https://github.com/devissaputra/misconception_aware_rag/actions/workflows/empirical.yml/badge.svg)](https://github.com/devissaputra/misconception_aware_rag/actions/workflows/empirical.yml)
+
+**Research Bundle · AI in Education · educational retrieval, wrong-answer conditioning, abstention and grounded tutoring**
 
 ![Misconception-Aware RAG Tutor architecture](assets/architecture.svg)
 
-**Area:** AI in Education · Educational RAG · Misconception Support  
-**Status:** working research prototype  
-**Author:** Devis Wawan Saputra
+This repository contains two deliberately separated layers:
 
-## Why this project exists
+1. a transparent misconception-aware tutoring prototype with BM25 retrieval, cue-based hypothesis detection, pedagogical reranking, evidence sufficiency, abstention and deterministic citation-grounded generation;
+2. a reproducible **real-data empirical study on SciQ** that evaluates whether conditioning retrieval on an observed wrong answer changes retrieval of the question's supporting evidence.
 
-A tutor should not merely detect a possible misconception and then retrieve unrelated evidence.
+The empirical study does **not** claim that SciQ distractors are validated learner misconceptions.
 
-The misconception signal should actually change:
+## Empirical research question
 
-- what the system searches for
-- which course passages are prioritized
-- whether corrective evidence is available
-- whether the system should answer or abstain
-- how the response communicates uncertainty
+> When retrieving science support passages, how does adding an observed wrong-answer option to the question change retrieval quality relative to a question-only BM25 baseline?
 
-This repository implements that full path.
+A third condition adds the gold correct answer. That condition is explicitly an **oracle upper bound**, not a deployable method.
 
-The current response generator is deterministic and citation-grounded.
+## Real external dataset
 
-It is **not an LLM**.
+The executable study uses the **SciQ** test split from the Allen Institute for AI / Hugging Face dataset repository.
 
-## Implemented pipeline
+- 13,679 questions in the full dataset;
+- test split: 1,000 questions;
+- fields include question, three distractors, correct answer and supporting paragraph;
+- pinned dataset revision: `2c94ad3e1aafab77146f384e23536f97a4849815`;
+- pinned test parquet SHA-256: `3a719356a29b127fc54ef3c7f51a034db4bd105d5717215e8c85d2aa58d60667`;
+- license reported by the dataset card: CC BY-NC 3.0.
+
+The source parquet is downloaded at run time and cached outside version control. See `DATA.md`.
+
+## Frozen empirical conditions
+
+For every SciQ test item with a non-empty support paragraph, the support paragraph is inserted into the retrieval corpus and its three distractors create three wrong-answer proxy cases.
+
+The same BM25 index is evaluated under:
+
+- **question_only** — question text only;
+- **wrong_answer_conditioned** — question plus one incorrect answer option;
+- **oracle_corrective** — question plus incorrect option plus the gold correct answer.
+
+The primary comparison is wrong-answer-conditioned versus question-only. The oracle condition is sensitivity analysis only.
+
+## Metrics and robustness
+
+The study reports:
+
+- mean reciprocal rank;
+- Recall@1, Recall@3 and Recall@5;
+- nDCG@5;
+- question-block bootstrap interval for the paired MRR difference;
+- counts of cases where wrong-answer conditioning improves, worsens or ties the baseline;
+- per-case metrics without redistributing question/support text.
+
+## Run the empirical study
+
+```bash
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+python scripts/run_sciq_study.py
+```
+
+Generated evidence:
+
+- `results/metrics.json`
+- `results/per_case_metrics.csv`
+- `results/summary.md`
+- `paper/results.md`
+
+## Prototype pipeline
 
 ![Misconception-Aware RAG Tutor data flow](assets/data_flow.svg)
 
-The current pipeline is:
+The prototype software remains available for research on a future validated misconception taxonomy:
 
 ```text
-task question
-      +
-learner response
-      ↓
-possible misconception detection
-      ↓
+task question + learner response
+        ↓
+possible / rejected / ambiguous misconception hypothesis
+        ↓
 misconception-conditioned query expansion
-      ↓
-BM25 retrieval
-      ↓
-pedagogical reranking
-      ↓
+        ↓
+generic BM25 + pedagogical reranking
+        ↓
 evidence sufficiency
-      ↓
-grounded response or abstention
+        ↓
+citation-grounded response or abstention
 ```
 
-Each stage is separately inspectable and separately evaluable.
+The bundled CSV files under `data/` are intentionally small **synthetic software fixtures**. They exercise the prototype logic and are not the empirical evidence for this research bundle.
 
-## Task question and learner response are separate
+## Why the distinction matters
 
-The system does not treat every mention of an incorrect statement as learner belief.
+A distractor is an incorrect answer option. It may reflect a misconception, a plausible foil, a slip, incomplete knowledge, or simple test construction. The SciQ experiment therefore studies **wrong-answer-conditioned retrieval**, not diagnostic validity.
 
-For example:
+Likewise, the prototype's cue detector returns a *possible misconception* hypothesis. It must not be treated as a stable learner label.
 
-```text
-Learner response:
-"Plants do not respire."
-```
+## Interpretation boundary
 
-can trigger a possible misconception candidate.
+This repository does not establish that:
 
-But:
+- a SciQ distractor is a real learner misconception;
+- lexical conditioning diagnoses why a learner answered incorrectly;
+- retrieval improvement causes learning;
+- citation presence guarantees semantic faithfulness;
+- synthetic cue rules generalize to real tutoring dialogue;
+- the oracle condition is deployable.
 
-```text
-Learner response:
-"It is false that plants do not respire."
-```
+A future learner-facing study would require expert misconception annotation, held-out learner responses, privacy and consent review, pedagogical evaluation, and a clean separation between taxonomy construction and evaluation.
 
-should not be treated the same way.
+## Professor review path
 
-The structured misconception catalog therefore supports both positive cues and rejection cues.
+`README.md` → `DATA.md` → `scripts/run_sciq_study.py` → `results/summary.md` → `results/metrics.json` → `RESEARCH_BUNDLE.md` → `REPRODUCIBILITY.md` → `ETHICS.md` → `paper/paper.md` → prototype core/tests.
 
-## Structured misconception catalog
+## Citation
 
-Each `MisconceptionRecord` stores:
+SciQ: Welbl, J., Liu, N. F., & Gardner, M. (2017). *Crowdsourcing Multiple Choice Science Questions*. arXiv:1707.06209.
 
-- misconception ID
-- concept
-- canonical statement
-- description
-- positive cues
-- negative/rejection cues
-- corrective concepts
-- remediation guidance
-- preferred evidence IDs
-
-Detection returns one of:
-
-- `possible`
-- `rejected`
-- `ambiguous`
-
-The system uses **possible misconception** rather than claiming that a learner definitely holds a misconception.
-
-## Misconception-conditioned retrieval
-
-This is the central difference from the original prototype.
-
-Originally:
-
-```text
-misconception detection ──┐
-                          ├── independent outputs
-lexical retrieval ────────┘
-```
-
-The detected misconception never influenced retrieval.
-
-That is now fixed.
-
-Possible misconception candidates contribute:
-
-- concept expansion
-- corrective-concept expansion
-- preferred evidence IDs
-- evidence-kind priorities
-- reranking boosts
-
-Rejected and ambiguous detections do not activate the same misconception-specific retrieval boosts.
-
-## Generic BM25 baseline
-
-`retrieve_generic()` implements a transparent BM25 baseline.
-
-Unlike the original raw-overlap score, BM25 includes:
-
-- term frequency
-- inverse document frequency
-- document-length normalization
-
-Zero-relevance passages are not padded into the output.
-
-## Pedagogical reranking
-
-`retrieve_misconception_aware()` adds transparent reranking signals on top of BM25.
-
-The score breakdown includes:
-
-- `bm25_score`
-- `misconception_boost`
-- `kind_boost`
-- `authority_boost`
-- `final_score`
-
-The current evidence kinds are:
-
-- explanation
-- counterevidence
-- worked example
-- remediation
-- definition
-
-The synthetic `authority` field is metadata for testing.
-
-It is **not** a probability that a source is true.
-
-## Evidence with zero lexical overlap
-
-Corrective evidence can use different wording from the learner's incorrect statement.
-
-For that reason, preferred misconception evidence can enter the candidate set even when lexical overlap is zero.
-
-This behavior is explicit and inspectable rather than hidden inside a learned reranker.
-
-## Evidence sufficiency and abstention
-
-`assess_evidence_sufficiency()` evaluates whether the system has enough support to generate a misconception-specific response.
-
-Current checks include:
-
-- minimum number of evidence passages
-- minimum top evidence score
-- explanatory or counterevidence support when a misconception is active
-
-When those checks fail, the system can return:
-
-```text
-status = abstain
-```
-
-rather than forcing a correction.
-
-The thresholds are research assumptions and need empirical validation.
-
-## Citation-grounded generation
-
-`generate_grounded_tutor_response()` completes the retrieval-to-generation path.
-
-The current generator is deterministic.
-
-It:
-
-- describes misconception detections as possible
-- cites retrieved document IDs
-- includes retrieved evidence passages
-- asks the learner to check reasoning against the evidence
-- abstains when evidence is insufficient
-
-Example structure:
-
-```text
-A possible misconception is ...
-Relevant course evidence:
-[D01] ...
-[D03] ...
-Check your reasoning against these cited passages ...
-```
-
-This is a reproducible generation baseline, not an LLM.
-
-A future LLM can replace the generator boundary only when the retrieval and grounding evaluation are ready.
-
-## Synthetic research corpus
-
-![Misconception-Aware RAG synthetic demo](assets/demo_snapshot.svg)
-
-The repository now includes:
-
-- **24 synthetic evidence passages**
-- **8 structured misconception records**
-- **16 labeled learner-response cases**
-- rejection and negation cases
-- clean/correct responses
-- expected misconception labels
-- relevant evidence IDs
-
-Covered concepts include:
-
-- plant respiration
-- photosynthesis
-- force and motion
-- fractions
-- correlation and causation
-- while loops
-- independent probability
-- heat and temperature
-
-All records are synthetic.
-
-## Demo comparison
-
-The demo compares:
-
-```text
-generic BM25
-vs
-misconception-aware BM25 + pedagogical reranking
-```
-
-on the same labeled cases.
-
-It prints:
-
-- expected misconception labels
-- predicted misconception labels
-- generic top-3 evidence
-- misconception-aware top-3 evidence
-- response status
-- citation IDs
-
-It also summarizes synthetic component diagnostics.
-
-Those values are software test results, **not empirical learner-study findings**.
-
-## Evaluation metrics
-
-### Misconception detection
-
-Implemented:
-
-- precision
-- recall
-- F1
-
-Future real studies should also report false positives separately for:
-
-- explicit rejection
-- quotation
-- ambiguity
-- slips/errors
-- incomplete knowledge
-
-### Retrieval
-
-Implemented:
-
-- Precision@k
-- Recall@k
-- reciprocal rank
-- nDCG@k
-
-### Response behavior
-
-The current baseline exposes:
-
-- grounded response vs abstention
-- citation IDs
-- evidence sufficiency diagnostics
-
-The repository does **not** claim to have a semantic faithfulness scorer.
-
-If an LLM generator is added later, evaluation should additionally include unsupported-claim rate, citation correctness, citation completeness, and pedagogical response quality.
-
-## Run the project
-
-```bash
-git clone https://github.com/devissaputra/misconception_aware_rag.git
-cd misconception_aware_rag
-
-python scripts/run_demo.py
-python -m unittest discover -s tests -v
-```
-
-The current implementation uses only the Python standard library.
-
-## Data
-
-`data/documents.csv`  
-Synthetic evidence corpus.
-
-`data/misconceptions.csv`  
-Structured misconception catalog.
-
-`data/cases.csv`  
-Labeled evaluation cases.
-
-`data/sample.csv`  
-Small preview.
-
-`data/README.md`  
-Schema, interpretation boundaries, evaluation cautions, and real-data governance guidance.
-
-## Core API
-
-`EvidenceDocument`  
-Structured evidence passage with concept, evidence kind, source, and authority metadata.
-
-`MisconceptionRecord`  
-Structured misconception definition with positive/rejection cues, corrective concepts, remediation, and preferred evidence.
-
-`detect_misconceptions(...)`  
-Returns possible/rejected/ambiguous misconception candidates.
-
-`build_retrieval_query(...)`  
-Adds corrective concepts for possible misconception candidates.
-
-`retrieve_generic(...)`  
-Generic BM25 baseline.
-
-`retrieve_misconception_aware(...)`  
-Misconception-conditioned BM25 retrieval plus pedagogical reranking.
-
-`assess_evidence_sufficiency(...)`  
-Determines whether evidence is strong enough for response generation.
-
-`generate_grounded_tutor_response(...)`  
-Deterministic citation-grounded response baseline.
-
-`precision_recall_f1(...)`  
-Misconception-detection metrics.
-
-`retrieval_metrics(...)`  
-Precision@k, Recall@k, reciprocal rank, and nDCG@k.
-
-`evaluate_case(...)`  
-Runs an end-to-end labeled case.
-
-`load_documents_csv(...)` / `load_catalog_csv(...)`  
-Validated CSV loaders.
-
-Legacy `retrieve(...)`, `detect_misconception(...)`, and `grounded_response(...)` remain for backward compatibility.
-
-## Research context
-
-The broad RAG architecture is informed by:
-
-- Lewis et al. (2020), *Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks*
-- https://arxiv.org/abs/2005.11401
-
-Misconception-aware educational RAG is directly relevant to:
-
-- Guo et al. (2026), *MisEdu-RAG: A Misconception-Aware Dual-Hypergraph RAG for Novice Math Teachers*
-- https://arxiv.org/abs/2604.04036
-
-Recent misconception-diagnosis work also studies candidate generation, retrieval, and reranking:
-
-- Mitton et al. (2026), *Misconception Diagnosis From Student-Tutor Dialogue: Generate, Retrieve, Rerank*
-- https://arxiv.org/abs/2602.02414
-
-See `docs/related_work.md`.
-
-The current repository is intentionally much simpler than those learned systems.
-
-## Evaluation checklist
-
-![Misconception-Aware RAG evaluation checklist](assets/evaluation_dashboard.svg)
-
-A real study should separately validate:
-
-1. **Misconception validity** — is the learner actually expressing the annotated misconception?
-2. **Retrieval quality** — are the right evidence passages ranked highly?
-3. **Evidence sufficiency** — does the system abstain appropriately?
-4. **Grounding** — are generated claims supported by retrieved evidence?
-5. **Pedagogical usefulness** — does the response actually help learning?
-6. **Leakage control** — are gold evaluation labels separated from production retrieval metadata?
-
-## Responsible-use boundary
-
-Do not treat:
-
-- one wrong answer as a stable misconception
-- mentioning a misconception as believing it
-- a metadata authority value as truth probability
-- retrieval relevance as pedagogical effectiveness
-- citations as proof that every generated claim is faithful
-- a synthetic benchmark result as real learner evidence
-
-## What this repository does not implement
-
-The current version does not include:
-
-- dense embeddings
-- vector database
-- neural reranker
-- hypergraph retrieval
-- learned misconception classifier
-- LLM generation
-- dialogue-state tracking
-- semantic citation-faithfulness model
-- validated confidence calibration
-- production learner profiles
-
-Those are future research directions, not hidden capabilities.
-
-## Limitations
-
-The current baseline:
-
-- depends on a hand-authored cue catalog
-- can miss paraphrased misconceptions
-- uses catalog-specific rejection cues
-- uses lexical BM25 retrieval
-- uses hand-authored reranking boosts
-- can leak gold knowledge if preferred evidence IDs are misused in evaluation
-- uses synthetic source-authority metadata
-- uses unvalidated sufficiency thresholds
-- uses a limited deterministic generator
-- has not been tested with real learners or teachers
-
-## Repository map
-
-```text
-.
-├── .github/workflows/ci.yml
-├── assets/
-│   ├── README.md
-│   ├── architecture.svg
-│   ├── data_flow.svg
-│   ├── demo_snapshot.svg
-│   └── evaluation_dashboard.svg
-├── data/
-│   ├── README.md
-│   ├── cases.csv
-│   ├── documents.csv
-│   ├── misconceptions.csv
-│   └── sample.csv
-├── docs/
-│   ├── ethics_and_risks.md
-│   ├── related_work.md
-│   └── research_protocol.md
-├── reports/model_card.md
-├── scripts/run_demo.py
-├── src/misconception_aware_rag/
-│   ├── __init__.py
-│   └── core.py
-├── tests/test_core.py
-├── .gitignore
-├── CITATION.cff
-├── LICENSE
-├── pyproject.toml
-├── requirements.txt
-└── README.md
-```
-
-## Research path
-
-A stronger empirical version would:
-
-1. create a real misconception taxonomy with expert annotation
-2. distinguish misconception from slips, ambiguity, and incomplete knowledge
-3. hold out evaluation cases from catalog construction
-4. remove preferred evidence IDs from production retrieval when evaluating generalization
-5. compare generic BM25 with misconception-aware BM25
-6. add dense retrieval as an explicit separate baseline
-7. add learned reranking only after labeled retrieval evaluation exists
-8. evaluate abstention and evidence sufficiency
-9. add a model generator behind the existing generation boundary
-10. evaluate citation correctness and unsupported claims
-11. measure pedagogical usefulness with teachers and learners
-12. only then claim real-world misconception-aware tutoring effectiveness
-
-## Citation and license
-
-`CITATION.cff` contains the software citation.
-
-Code and original SVG visuals use the MIT License. External datasets, models, publications, and educational resources retain their own licenses and usage conditions.
+Software citation is provided in `CITATION.cff`.
