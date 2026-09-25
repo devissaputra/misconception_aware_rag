@@ -1,2 +1,4 @@
 # Core retrieval, reranking, evaluation, tests, and deterministic generation use only the Python standard library.
-# Add pinned neural retrieval or LLM dependencies only when a concrete experiment actually requires them.
+# The empirical SciQ research runner uses pandas + pyarrow to read the pinned external parquet split.
+pandas>=2.2,<3
+pyarrow>=16,<25
