@@ -2,17 +2,17 @@
 
 ## System
 
-Misconception-Aware RAG Tutor
+Misconception-Aware RAG Tutor with a separate empirical SciQ retrieval study.
 
 ## Current maturity
 
-Research prototype with a real external retrieval study and synthetic fixtures for the diagnostic/tutoring components.
+Research prototype. The empirical layer supports bounded claims about lexical evidence retrieval; the diagnostic/tutoring layer remains synthetic-fixture software research.
 
-## Empirical evidence available
+## Empirical evidence
 
-The external SciQ study evaluates one bounded claim: whether adding an observed wrong-answer option changes BM25 retrieval of a support passage. It does not validate misconception diagnosis or tutoring effectiveness.
+The SciQ study compares question-only BM25, observed wrong-answer conditioning, a shuffled wrong-answer lexical-expansion control and an oracle-informed gold-answer sensitivity condition. It does not validate misconception diagnosis or tutoring effectiveness.
 
-SciQ distractors are treated as wrong-answer proxies. The correct-answer-expanded condition is an oracle sensitivity analysis only.
+The shuffled control preserves the distractor-text distribution while breaking question–answer alignment. It is designed to expose generic query-expansion effects.
 
 ## Prototype inputs and outputs
 
@@ -24,12 +24,12 @@ The prototype accepts task context and learner response, can emit possible/rejec
 - a wrong answer need not imply a stable misconception;
 - synthetic fixture cues are not population-validated;
 - BM25 is lexical;
-- metadata boosts require validation;
-- evidence-sufficiency thresholds are unvalidated;
+- metadata boosts and evidence-sufficiency thresholds are unvalidated;
 - deterministic generation is limited;
 - retrieval relevance is not pedagogical effectiveness;
-- the SciQ support corpus is not a real classroom knowledge base.
+- SciQ support passages are not a real classroom knowledge base;
+- the shuffled control does not identify learner cognitive mechanisms.
 
 ## Human oversight
 
-Misconception hypotheses should remain inspectable and reversible. No output should become a durable learner label or consequential decision without stronger evidence and governance.
+Misconception hypotheses should remain inspectable, reversible and non-consequential unless supported by substantially stronger learner-level evidence and governance.

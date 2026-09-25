@@ -1,67 +1,78 @@
-# Misconception-Aware RAG Tutor — Research Bundle
+# Misconception-Aware RAG Tutor — Empirical Research Bundle
 
 [![CI](https://github.com/devissaputra/misconception_aware_rag/actions/workflows/ci.yml/badge.svg)](https://github.com/devissaputra/misconception_aware_rag/actions/workflows/ci.yml)
 [![Empirical Study](https://github.com/devissaputra/misconception_aware_rag/actions/workflows/empirical.yml/badge.svg)](https://github.com/devissaputra/misconception_aware_rag/actions/workflows/empirical.yml)
 
-**Research Bundle · AI in Education · educational retrieval, wrong-answer conditioning, abstention and grounded tutoring**
+**AI in Education · educational retrieval · wrong-answer conditioning · negative-control evaluation · reproducible research**
 
-![Misconception-Aware RAG Tutor architecture](assets/architecture.svg)
+This repository intentionally separates two layers:
 
-This repository contains two deliberately separated layers:
+1. **Empirical research:** a frozen real-data SciQ study asking whether adding an observed wrong-answer option changes retrieval of the question's supporting evidence.
+2. **Prototype software:** an inspectable misconception-aware tutoring pipeline using cue-based hypotheses, BM25, pedagogical reranking, evidence sufficiency, abstention and deterministic citation-grounded generation.
 
-1. a transparent misconception-aware tutoring prototype with BM25 retrieval, cue-based hypothesis detection, pedagogical reranking, evidence sufficiency, abstention and deterministic citation-grounded generation;
-2. a reproducible **real-data empirical study on SciQ** that evaluates whether conditioning retrieval on an observed wrong answer changes retrieval of the question's supporting evidence.
+The empirical study does **not** validate the full tutoring prototype, and SciQ distractors are **not** treated as validated learner misconceptions.
 
-The empirical study does **not** claim that SciQ distractors are validated learner misconceptions.
+## Research question
 
-## Empirical research question
+> Does conditioning a lexical evidence-retrieval query on an observed wrong answer change support-passage retrieval, and is any effect distinguishable from merely appending unrelated distractor-like text?
 
-> When retrieving science support passages, how does adding an observed wrong-answer option to the question change retrieval quality relative to a question-only BM25 baseline?
+## Frozen external dataset
 
-A third condition adds the gold correct answer. That condition is explicitly an **oracle upper bound**, not a deployable method.
+The executable study uses the SciQ test split from the Allen Institute for AI / Hugging Face dataset repository.
 
-## Real external dataset
-
-The executable study uses the **SciQ** test split from the Allen Institute for AI / Hugging Face dataset repository.
-
-- 13,679 questions in the full dataset;
+- full SciQ dataset: 13,679 questions;
 - test split: 1,000 questions;
-- fields include question, three distractors, correct answer and supporting paragraph;
-- pinned dataset revision: `2c94ad3e1aafab77146f384e23536f97a4849815`;
-- pinned test parquet SHA-256: `3a719356a29b127fc54ef3c7f51a034db4bd105d5717215e8c85d2aa58d60667`;
-- license reported by the dataset card: CC BY-NC 3.0.
+- pinned revision: `2c94ad3e1aafab77146f384e23536f97a4849815`;
+- frozen test parquet SHA-256: `3a719356a29b127fc54ef3c7f51a034db4bd105d5717215e8c85d2aa58d60667`;
+- license reported by the dataset card: CC BY-NC 3.0;
+- original reference: Welbl, Liu & Gardner (2017), *Crowdsourcing Multiple Choice Science Questions*.
 
-The source parquet is downloaded at run time and cached outside version control. See `DATA.md`.
+The empirical runner rejects source bytes that do not match the frozen hash.
 
-## Frozen empirical conditions
+## Four controlled retrieval conditions
 
-For every SciQ test item with a non-empty support paragraph, the support paragraph is inserted into the retrieval corpus and its three distractors create three wrong-answer proxy cases.
+The same BM25 corpus and retrieval settings are used throughout:
 
-The same BM25 index is evaluated under:
+- **question_only** — the question alone;
+- **wrong_answer_conditioned** — question + one actual SciQ distractor;
+- **shuffled_wrong_answer_control** — question + distractor text from a different eligible question under a frozen no-self-match permutation;
+- **oracle_corrective** — question + actual distractor + gold correct answer.
 
-- **question_only** — question text only;
-- **wrong_answer_conditioned** — question plus one incorrect answer option;
-- **oracle_corrective** — question plus incorrect option plus the gold correct answer.
+The shuffled condition is a **lexical-expansion negative control**. It preserves the marginal distractor-text distribution while deliberately breaking the question–answer relationship. This helps distinguish an effect of the observed wrong-answer content from a generic effect of adding distractor-like text.
 
-The primary comparison is wrong-answer-conditioned versus question-only. The oracle condition is sensitivity analysis only.
+The gold-answer condition is an **oracle-informed sensitivity condition**. It is not a mathematical upper bound and is not deployable.
+
+## Frozen retrieval protocol
+
+- BM25 `k1 = 1.5`, `b = 0.75`;
+- retrieval depth `k = 5`;
+- Unicode `\w+` tokenization after lowercasing;
+- one support paragraph is the relevant document for each eligible question;
+- all three distractors produce wrong-answer proxy cases;
+- shuffled-control seed: `20260925`;
+- primary question-block bootstrap seed: `20260925`;
+- 3,000 bootstrap replicates;
+- question, not distractor case, is the resampling unit.
+
+The generated result manifest also records Python, pandas, pyarrow and platform versions.
 
 ## Metrics and robustness
 
-The study reports:
+The study reports MRR, Recall@1/3/5 and nDCG@5 for every condition, together with three paired question-block comparisons:
 
-- mean reciprocal rank;
-- Recall@1, Recall@3 and Recall@5;
-- nDCG@5;
-- question-block bootstrap interval for the paired MRR difference;
-- counts of cases where wrong-answer conditioning improves, worsens or ties the baseline;
-- per-case metrics without redistributing question/support text.
+1. observed wrong answer vs question only;
+2. shuffled wrong-answer control vs question only;
+3. observed wrong answer vs shuffled wrong-answer control.
 
-## Run the empirical study
+Directional improve/worsen/tie counts are also retained. Per-case files contain only identifiers, condition names, query-token counts and metrics—not SciQ question/support text.
+
+## Run
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install .
+python -m unittest discover -s tests -v
 python scripts/run_sciq_study.py
 ```
 
@@ -71,54 +82,18 @@ Generated evidence:
 - `results/per_case_metrics.csv`
 - `results/summary.md`
 - `paper/results.md`
+- `paper/results.tex`
 
-## Prototype pipeline
+## Prototype boundary
 
-![Misconception-Aware RAG Tutor data flow](assets/data_flow.svg)
+The prototype can create possible/rejected/ambiguous misconception hypotheses, expand retrieval queries, rerank evidence, assess sufficiency and abstain or generate a deterministic citation-grounded response. Those components remain research scaffolding for a future learner-validated study.
 
-The prototype software remains available for research on a future validated misconception taxonomy:
-
-```text
-task question + learner response
-        ↓
-possible / rejected / ambiguous misconception hypothesis
-        ↓
-misconception-conditioned query expansion
-        ↓
-generic BM25 + pedagogical reranking
-        ↓
-evidence sufficiency
-        ↓
-citation-grounded response or abstention
-```
-
-The bundled CSV files under `data/` are intentionally small **synthetic software fixtures**. They exercise the prototype logic and are not the empirical evidence for this research bundle.
-
-## Why the distinction matters
-
-A distractor is an incorrect answer option. It may reflect a misconception, a plausible foil, a slip, incomplete knowledge, or simple test construction. The SciQ experiment therefore studies **wrong-answer-conditioned retrieval**, not diagnostic validity.
-
-Likewise, the prototype's cue detector returns a *possible misconception* hypothesis. It must not be treated as a stable learner label.
+The CSV files under `data/` are synthetic software fixtures only.
 
 ## Interpretation boundary
 
-This repository does not establish that:
-
-- a SciQ distractor is a real learner misconception;
-- lexical conditioning diagnoses why a learner answered incorrectly;
-- retrieval improvement causes learning;
-- citation presence guarantees semantic faithfulness;
-- synthetic cue rules generalize to real tutoring dialogue;
-- the oracle condition is deployable.
-
-A future learner-facing study would require expert misconception annotation, held-out learner responses, privacy and consent review, pedagogical evaluation, and a clean separation between taxonomy construction and evaluation.
+This repository does **not** establish that a SciQ distractor represents a learner misconception, that lexical query conditioning diagnoses learner reasoning, that retrieval relevance causes learning, that citations guarantee semantic faithfulness, or that the prototype is ready for consequential learner modeling.
 
 ## Professor review path
 
-`README.md` → `DATA.md` → `scripts/run_sciq_study.py` → `results/summary.md` → `results/metrics.json` → `RESEARCH_BUNDLE.md` → `REPRODUCIBILITY.md` → `ETHICS.md` → `paper/paper.md` → prototype core/tests.
-
-## Citation
-
-SciQ: Welbl, J., Liu, N. F., & Gardner, M. (2017). *Crowdsourcing Multiple Choice Science Questions*. arXiv:1707.06209.
-
-Software citation is provided in `CITATION.cff`.
+`README.md` → `DATA.md` → `scripts/run_sciq_study.py` → `results/summary.md` → `results/metrics.json` → `RESEARCH_BUNDLE.md` → `REPRODUCIBILITY.md` → `ETHICS.md` → `paper/paper.md` → `tests/test_sciq_study.py`.

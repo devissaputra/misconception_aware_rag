@@ -1,0 +1,37 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{booktabs}
+\usepackage{hyperref}
+\usepackage{microtype}
+
+\title{Does Wrong-Answer Conditioning Change Educational Evidence Retrieval?\\A Controlled SciQ Study}
+\author{Devis Wawan Saputra}
+\date{}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+Misconception-aware retrieval systems often assume that an incorrect response can improve evidence selection, but appending any text can also alter lexical retrieval. We evaluate question-only BM25, observed wrong-answer conditioning, a shuffled wrong-answer negative control, and an oracle-informed gold-answer sensitivity condition on a frozen SciQ test split. Rank metrics and question-block bootstrap intervals separate the primary retrieval effect from a generic query-expansion explanation.
+\end{abstract}
+
+\section{Research question}
+Does adding an observed wrong-answer option change retrieval of a science question's support passage, and is that effect distinguishable from adding unrelated distractor-like text?
+
+\section{Data}
+We use the SciQ test split \cite{welbl2017sciq} pinned to a fixed dataset revision and SHA-256. Only items with non-empty support passages enter the study. SciQ distractors are treated as wrong-answer proxies, not validated misconception labels.
+
+\section{Retrieval conditions}
+BM25 \cite{robertson2009bm25} uses $k_1=1.5$, $b=0.75$, lowercased Unicode word tokens, and retrieval depth five. Conditions are question-only; question plus observed distractor; question plus a shuffled distractor from a different eligible question; and question plus observed distractor plus gold correct answer. The shuffled condition preserves the marginal distractor-text distribution while breaking question--answer alignment. The gold-answer condition is oracle-informed sensitivity analysis, not a mathematical upper bound.
+
+\section{Evaluation}
+We report MRR, Recall@1/3/5 and nDCG@5. Since each question yields three distractor cases, uncertainty is resampled by question block. We report observed-wrong-answer versus question-only, shuffled-control versus question-only, and observed-wrong-answer versus shuffled-control contrasts.
+
+\input{results.tex}
+
+\section{Validity and responsible-use boundary}
+The benchmark measures lexical retrieval of SciQ support passages, not misconception diagnosis, tutoring quality or learning gain. The shuffled control helps diagnose generic query-expansion effects but does not model learner cognition. The separate tutoring prototype remains unvalidated for learner-facing use.
+
+\bibliographystyle{plain}
+\bibliography{references}
+\end{document}

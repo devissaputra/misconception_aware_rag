@@ -1,35 +1,38 @@
 # Research Protocol
 
-## Empirical study
+## Empirical question
 
-### Question
+Does adding an observed wrong-answer option to a science question change BM25 retrieval of the question's supporting evidence, and is that effect distinguishable from adding unrelated distractor-like text?
 
-Does adding an observed wrong-answer option to a science question change BM25 retrieval of the question's supporting evidence?
+## Dataset
 
-### Dataset
+Frozen SciQ external test split. See `DATA.md` for revision and SHA-256.
 
-SciQ external test split, pinned and SHA-256 verified. See `DATA.md`.
+## Unit and dependence
 
-### Unit and dependence
+A question is the uncertainty-resampling unit. Each eligible question contributes three wrong-answer proxy cases, one per distractor. Cases belonging to the same question are never treated as independent bootstrap units.
 
-A question is the uncertainty-resampling unit. Each eligible question contributes three wrong-answer proxy cases, one per distractor. Bootstrap resampling therefore occurs by question block.
+## Conditions
 
-### Conditions
+1. **question_only** — question text only.
+2. **wrong_answer_conditioned** — question plus the observed SciQ distractor.
+3. **shuffled_wrong_answer_control** — question plus same-position distractor text from another eligible question under a frozen derangement.
+4. **oracle_corrective** — question plus observed distractor plus gold correct answer; oracle-informed sensitivity only.
 
-1. question-only BM25;
-2. question + wrong-answer proxy;
-3. question + wrong-answer proxy + gold correct answer (oracle sensitivity only).
+The shuffled condition preserves the marginal distractor-text distribution and controls for generic lexical expansion. The oracle condition is not a mathematical upper bound.
 
-### Outcomes
+## Retrieval protocol
 
-MRR, Recall@1/3/5 and nDCG@5. Directional analysis counts cases where wrong-answer conditioning improves, worsens or ties question-only retrieval.
+BM25 uses `k1=1.5`, `b=0.75`, Unicode lowercased word tokens and depth `k=5`.
 
-### Non-claim
+## Outcomes
 
-SciQ distractors are not validated learner misconceptions. This study evaluates wrong-answer-conditioned retrieval only.
+MRR, Recall@1/3/5 and nDCG@5. Three question-block bootstrap contrasts are reported: wrong vs question-only, shuffled vs question-only, and wrong vs shuffled. Directional improve/worsen/tie counts supplement mean effects.
+
+## Non-claim
+
+SciQ distractors are not validated learner misconceptions. The empirical study evaluates retrieval conditioning, not diagnosis or learning outcomes.
 
 ## Prototype research path
 
-The repository also keeps the inspectable tutoring prototype: possible/rejected/ambiguous cue detection, query expansion, BM25, pedagogical reranking, evidence sufficiency, abstention and deterministic grounded response generation.
-
-The small committed CSV catalog is a software fixture. Future diagnostic research should independently validate misconception taxonomies, annotation quality, false positives, retrieval relevance, grounding and pedagogical usefulness on held-out real learner data.
+The separate prototype retains possible/rejected/ambiguous cue detection, query expansion, BM25, pedagogical reranking, evidence sufficiency, abstention and deterministic grounded generation. Future diagnostic research requires independently validated misconception taxonomies and real learner data.

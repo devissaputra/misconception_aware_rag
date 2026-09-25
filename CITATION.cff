@@ -1,10 +1,20 @@
 cff-version: 1.2.0
-message: "If you use this software, please cite it."
-title: "Misconception-Aware RAG Tutor"
+message: "If you use this research bundle, please cite the repository and the SciQ dataset/paper."
+title: "Wrong-Answer-Conditioned Educational Evidence Retrieval on SciQ"
 type: software
 authors:
   - family-names: "Saputra"
     given-names: "Devis Wawan"
 repository-code: "https://github.com/devissaputra/misconception_aware_rag"
 license: MIT
-version: 0.2.0
+version: 0.3.0
+date-released: 2026-09-25
+keywords:
+  - AI in Education
+  - educational retrieval
+  - wrong-answer conditioning
+  - negative control
+  - SciQ
+  - BM25
+  - reproducible research
+  - misconception-aware RAG
