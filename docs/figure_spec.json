@@ -1,0 +1,50 @@
+{
+  "question": "Does adding a wrong answer improve evidence retrieval?",
+  "data": "SciQ: 884 supported questions, 884 support documents and 2,652 distractor cases.",
+  "method": "BM25 question-only retrieval versus observed distractor, shuffled distractor and gold-answer oracle conditions.",
+  "formula": "Reciprocal rank = 1/rank of the relevant support; MRR = mean reciprocal rank.",
+  "interpretation": "Three distractor cases share each question, so uncertainty resamples question blocks. Distractors are proxies, not validated learner misconceptions. Gold-answer expansion has privileged information and is not a deployable method.",
+  "status": "RECORDED EXTERNAL-DATA STUDY | full experiment not rerun in this review",
+  "source": "results/metrics.json",
+  "rows": [
+    {
+      "label": "question_only",
+      "path": [
+        "metrics",
+        "question_only",
+        "rr"
+      ],
+      "unit": "MRR ↑"
+    },
+    {
+      "label": "wrong_answer_conditioned",
+      "path": [
+        "metrics",
+        "wrong_answer_conditioned",
+        "rr"
+      ],
+      "unit": "MRR ↑"
+    },
+    {
+      "label": "shuffled_wrong_answer_control",
+      "path": [
+        "metrics",
+        "shuffled_wrong_answer_control",
+        "rr"
+      ],
+      "unit": "MRR ↑"
+    },
+    {
+      "label": "oracle_corrective",
+      "path": [
+        "metrics",
+        "oracle_corrective",
+        "rr"
+      ],
+      "unit": "MRR ↑"
+    }
+  ],
+  "table_title": "Selected recorded values (units and context shown)",
+  "evidence_note": "Selected committed results; source values were not independently retrained in this review.",
+  "finding": "Wrong-answer expansion slightly reduces MRR from 0.9472 to 0.9433 in the frozen benchmark. Its contrast with a shuffled distractor control has an interval spanning zero, so the study does not establish a distinct benefit from the semantic relationship of the wrong answer. The repository therefore separates the measured retrieval result from the tutoring prototype and makes no claim of improved learning."
+}

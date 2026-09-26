@@ -1,12 +1,7 @@
-# Portfolio Positioning
+# Misconception-Aware RAG Tutor — Empirical
 
-**Primary tag:** AI in Education  
-**Artifact type:** Empirical Research Bundle  
-**Research theme:** educational evidence retrieval, wrong-answer conditioning, negative-control evaluation, reproducibility  
-**External data:** frozen SciQ test split
+This repository separates an empirical retrieval study from the tutoring prototype built around it. The study tests whether conditioning evidence retrieval on an observed wrong answer changes support-passage retrieval on SciQ, while a negative-control condition checks whether any gain is more than the effect of simply appending extra distractor-like text.
 
-The professor-facing contribution is the controlled SciQ retrieval study, not a claim that the full tutor is validated. The study separates question-only retrieval, observed wrong-answer conditioning, a shuffled distractor lexical-expansion control, and an oracle-informed sensitivity condition. Its main result is negative but useful: both real and shuffled distractor expansion reduce MRR relative to question-only retrieval, while the observed-vs-shuffled contrast is not clearly separated from zero under question-block bootstrap uncertainty.
+Wrong-answer expansion slightly reduces MRR from 0.9472 to 0.9433 in the frozen benchmark. Its contrast with a shuffled distractor control has an interval spanning zero, so the study does not establish a distinct benefit from the semantic relationship of the wrong answer. The repository therefore separates the measured retrieval result from the tutoring prototype and makes no claim of improved learning.
 
-The separate tutor prototype demonstrates inspectable engineering for misconception hypotheses, pedagogical reranking, evidence sufficiency, abstention and deterministic citation-grounded responses, while remaining explicitly outside the empirical claim boundary.
-
-Recommended review path: README.md → DATA.md → scripts/run_sciq_study.py → results/summary.md → results/metrics.json → RESEARCH_BUNDLE.md → paper/paper.md → tests/test_sciq_study.py.
+See [CALCULATIONS.md](CALCULATIONS.md) for evidence and verification scope.

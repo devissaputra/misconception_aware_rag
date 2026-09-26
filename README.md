@@ -1,4 +1,23 @@
-# Misconception-Aware RAG Tutor — Empirical Research Bundle
+# Misconception-Aware RAG Tutor — Empirical
+
+This repository separates an empirical retrieval study from the tutoring prototype built around it. The study tests whether conditioning evidence retrieval on an observed wrong answer changes support-passage retrieval on SciQ, while a negative-control condition checks whether any gain is more than the effect of simply appending extra distractor-like text.
+
+Wrong-answer expansion slightly reduces MRR from 0.9472 to 0.9433 in the frozen benchmark. Its contrast with a shuffled distractor control has an interval spanning zero, so the study does not establish a distinct benefit from the semantic relationship of the wrong answer. The repository therefore separates the measured retrieval result from the tutoring prototype and makes no claim of improved learning.
+
+## Start here
+
+- [Calculations, evidence and verification scope](CALCULATIONS.md)
+- [Figure sources and exact numerical paths](docs/figure_spec.json)
+- [Working paper](paper/paper.md)
+- [Data and provenance](DATA.md)
+
+![Study question, data, design and interpretation](assets/review_overview.svg)
+
+![Defined calculation and source-linked evidence](assets/review_calculations.svg)
+
+**Review scope:** The existing suite requires unavailable dependencies; no full-suite pass is claimed. The bundled demonstration executed successfully in this review. Stored empirical results were inspected, not independently reproduced from raw data.
+
+## Detailed project documentation
 
 [![CI](https://github.com/devissaputra/misconception_aware_rag/actions/workflows/ci.yml/badge.svg)](https://github.com/devissaputra/misconception_aware_rag/actions/workflows/ci.yml)
 [![Empirical Study](https://github.com/devissaputra/misconception_aware_rag/actions/workflows/empirical.yml/badge.svg)](https://github.com/devissaputra/misconception_aware_rag/actions/workflows/empirical.yml)

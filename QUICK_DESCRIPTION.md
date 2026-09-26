@@ -1,7 +1,7 @@
-# Quick Description
+# Misconception-Aware RAG Tutor — Empirical
 
-Empirical AI-in-Education research bundle on frozen SciQ evaluating whether observed wrong-answer text changes BM25 support-passage retrieval beyond generic lexical query expansion. Includes a deterministic shuffled wrong-answer negative control, question-block bootstrap uncertainty, evidence-integrity CI, and a separately scoped transparent misconception-aware RAG tutor prototype.
+This repository separates an empirical retrieval study from the tutoring prototype built around it. The study tests whether conditioning evidence retrieval on an observed wrong answer changes support-passage retrieval on SciQ, while a negative-control condition checks whether any gain is more than the effect of simply appending extra distractor-like text.
 
-**GitHub About recommendation:** Empirical AI-in-Education study of wrong-answer-conditioned BM25 retrieval on frozen SciQ, with shuffled lexical controls, question-block uncertainty, and a transparent misconception-aware RAG prototype.
+Wrong-answer expansion slightly reduces MRR from 0.9472 to 0.9433 in the frozen benchmark. Its contrast with a shuffled distractor control has an interval spanning zero, so the study does not establish a distinct benefit from the semantic relationship of the wrong answer. The repository therefore separates the measured retrieval result from the tutoring prototype and makes no claim of improved learning.
 
-**Recommended topics:** ai-in-education, educational-retrieval, bm25, sciq, wrong-answer-conditioning, negative-control, reproducible-research, retrieval-augmented-generation, intelligent-tutoring, misconception-aware-rag
+See [CALCULATIONS.md](CALCULATIONS.md) for evidence and verification scope.

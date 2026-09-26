@@ -1,3 +1,7 @@
+# Calculation reading guide: ../CALCULATIONS.md (repository root).
+# Reciprocal rank = 1/rank of the relevant support; MRR = mean reciprocal rank.
+# Three distractor cases share each question, so uncertainty resamples question blocks. Distractors are proxies, not validated learner misconceptions. Gold-answer expansion has privileged information and is not a deployable method.
+
 import csv
 import math
 import re

@@ -44,3 +44,33 @@ The repository also contains a cue-based misconception-hypothesis detector, peda
 ## Limitations
 
 SciQ distractors are crowdsourced incorrect options, not learner-produced misconception annotations. BM25 is lexical. The support corpus is not a real course repository. A shuffled lexical control improves interpretation but does not model learner cognition. Retrieval relevance does not establish instructional quality or learning benefit.
+
+
+## Calculation definitions and evidence audit
+
+Reciprocal rank = 1/rank of the relevant support; MRR = mean reciprocal rank.
+
+Three distractor cases share each question, so uncertainty resamples question blocks. Distractors are proxies, not validated learner misconceptions. Gold-answer expansion has privileged information and is not a deployable method.
+
+Wrong-answer expansion slightly reduces MRR from 0.9472 to 0.9433 in the frozen benchmark. Its contrast with a shuffled distractor control has an interval spanning zero, so the study does not establish a distinct benefit from the semantic relationship of the wrong answer. The repository therefore separates the measured retrieval result from the tutoring prototype and makes no claim of improved learning.
+
+The [calculation guide](../CALCULATIONS.md) provides exact evidence paths and a function-level implementation map.
+
+![Study design](../assets/review_overview.svg)
+
+![Calculation and selected evidence](../assets/review_calculations.svg)
+
+### Selected evidence and interpretation
+
+| Quantity | Value | Unit / meaning | JSON path |
+|---|---:|---|---|
+| question_only | 0.9471530920060329 | MRR ↑ | `metrics.question_only.rr` |
+| wrong_answer_conditioned | 0.9432629462041229 | MRR ↑ | `metrics.wrong_answer_conditioned.rr` |
+| shuffled_wrong_answer_control | 0.9447083961789843 | MRR ↑ | `metrics.shuffled_wrong_answer_control.rr` |
+| oracle_corrective | 0.9612242332830566 | MRR ↑ | `metrics.oracle_corrective.rr` |
+
+These values are read from `results/metrics.json`. They must be interpreted with the split, data status and limitations above. The bundled demonstration executed successfully in this review. Stored empirical results were inspected, not independently reproduced from raw data.
+
+### Reproduction and claim boundaries
+
+The existing suite requires unavailable dependencies; no full-suite pass is claimed. The figure generator can be checked with `python scripts/build_review_figures.py --check`. This verifies the displayed calculation evidence, not an independent replication of the complete scientific experiment. The manuscript is a working report, not a peer-reviewed publication.

@@ -34,4 +34,10 @@ The benchmark measures lexical retrieval of SciQ support passages, not misconcep
 
 \bibliographystyle{plain}
 \bibliography{references}
+\section{Calculation audit and reproduction scope}
+Wrong-answer expansion slightly reduces MRR from 0.9472 to 0.9433 in the frozen benchmark. Its contrast with a shuffled distractor control has an interval spanning zero, so the study does not establish a distinct benefit from the semantic relationship of the wrong answer. The repository therefore separates the measured retrieval result from the tutoring prototype and makes no claim of improved learning.
+
+Three distractor cases share each question, so uncertainty resamples question blocks. Distractors are proxies, not validated learner misconceptions. Gold-answer expansion has privileged information and is not a deployable method.
+
+See the repository calculation guide for exact source paths. The full experiment was not independently rerun during this documentation review.
 \end{document}
